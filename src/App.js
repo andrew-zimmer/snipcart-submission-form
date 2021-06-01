@@ -3,7 +3,12 @@ import React, { useState } from 'react'
 import { Button, FormControl, FormControlLabel, FormHelperText, FormGroup, Grid, InputLabel, List, ListItem, ListItemText, MenuItem, NativeSelect, Select, Switch, TextField, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+
 import ImageUpload from './ImageUpload'
+
+
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -195,15 +200,25 @@ function App() {
         >
           {title}
         </TextField>
-        <TextField
-          label="Description"
-          type="text"
-          onChange={(event) => setDescription(event.target.value)}
-          rows={4}
-          multiline
-        >
-          {description}
-        </TextField>
+        <CKEditor
+                    editor={ ClassicEditor }
+                    data={description}
+                    onReady={ editor => {
+                        // You can store the "editor" and use when it is needed.
+                        console.log( 'Editor is ready to use!', editor );
+                    } }
+                    onChange={ ( event, editor ) => {
+                        const data = editor.getData();
+                        console.log( { event, editor, data } );
+                        setDescription({data})
+                    } }
+                    onBlur={ ( event, editor ) => {
+                        console.log( 'Blur.', editor );
+                    } }
+                    onFocus={ ( event, editor ) => {
+                        console.log( 'Focus.', editor );
+                    } }
+                />
         <TextField
           label="Website order number"
           type="number"
